@@ -1,5 +1,6 @@
 import time
 import re
+import urllib
 from selenium.webdriver import Chrome
 
 
@@ -107,3 +108,25 @@ def insta_link_details(url):
                     'mentions': mentions}
     time.sleep(10)
     return post_details
+
+
+def insta_url_to_img(url, filename="insta.jpg"):
+    """
+    Getting the actual photo file from an Instagram url
+
+    Args:
+    url: Instagram direct post url
+    filename: file name for image at url
+
+    Returns:
+    image file, saved locally
+    """
+    browser = Chrome()
+    browser.get(url)
+    # The srcset attribute contains 3 different links of different sizes, the first being 640w
+    image_1 = browser.find_element_by_xpath(
+        """//*[@id="react-root"]/section/main/div/div/
+            article/div[1]/div/div/div[2]/div/div/div/ul/li[1]/
+            div/div/div/div[1]/div[1]/img""").get_attribute('srcset').split(' ')[0]
+    # Exporting the photo
+    urllib.request.urlretrieve(image_1, filename)
