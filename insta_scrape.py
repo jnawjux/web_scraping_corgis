@@ -29,6 +29,7 @@ def recent_post_links(username, post_count=25):
         browser.execute_script(scroll_down)
         time.sleep(10)
     else:
+        browser.stop_client()
         return post_links[:post_count]
 
 
@@ -41,24 +42,34 @@ def insta_link_details(url):
 
     Returns:
     A list of dictionaries with details for each Instagram post, including link,
-    like/view count, age (when posted), and initial comment
+    post type, like/view count, age (when posted), and initial comment
     """
     browser = Chrome()
     browser.get(url)
     try:
         # This captures the standard like count.
-        likes = browser.find_element_by_partial_link_text(' likes').text
+        likes = browser.find_element_by_xpath(
+            """//*[@id="react-root"]/section/main/div/div/
+                article/div[2]/section[2]/div/div/button""").text.split()[0]
+        post_type = 'photo'
     except:
         # This captures the like count for videos which is stored
-        view_id = '//*[@id="react-root"]/section/main/div/div/article/div[2]/section[2]/div/span'
-        likes = browser.find_element_by_xpath(view_id).text
+        likes = browser.find_element_by_xpath(
+            """//*[@id="react-root"]/section/main/div/div/
+                article/div[2]/section[2]/div/span""").text.split()[0]
+        post_type = 'video'
     age = browser.find_element_by_css_selector('a time').text
-    xpath_c = '//*[@id="react-root"]/section/main/div/div/article/div[2]/div[1]/ul/li[1]/div/div/div'
-    comment = browser.find_element_by_xpath(xpath_c).text
-    post_details = {'link': link, 'likes/views': likes,
+    comment = browser.find_element_by_xpath(
+        "//span[contains(@title, 'Edited')]").text
+    post_details = {'link': url, 'type': post_type, 'likes/views': likes,
                     'age': age, 'comment': comment}
     time.sleep(10)
     return post_details
+
+
+/html/body/span/section/main/div/div/article/div[2]/section[2]/div/div[2]/button
+/html/body/span/section/main/div/div/article/div[2]/section[2]/div/span
+//*[@id = "react-root"]/section/main/div/div/article/div[2]/section[2]/div/div/button
 
 
 def find_hashtags(comment):
@@ -69,7 +80,31 @@ def find_hashtags(comment):
     comment: Instagram comment text
 
     Returns:
-    a list of all hashtags found in the given comment
+    a list or individual hashtag if found in comment
     """
     hashtags = re.findall('#[A-Za-z]+', comment)
-    return hashtags
+    if (len(hashtags) > 1) & (len(hashtags) != 1):
+        return hashtags
+    elif len(hashtags) == 1:
+        return hashtags[0]
+    else:
+        return ""
+
+
+def find_mentions(comment):
+    """
+    Find mentions used in comment and return them
+
+    Args:
+    comment: Instagram comment text
+
+    Returns:
+    a list or individual mentions if found in comment
+    """
+    mentions = re.findall('@[A-Za-z]+', comment)
+    if (len(mentions) > 1) & (len(mentions) != 1):
+        return mentions
+    elif len(mentions) == 1:
+        return mentions[0]
+    else:
+        return ""
