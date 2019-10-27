@@ -15,7 +15,8 @@ def recent_post_links(username, post_count=25):
     A list with the unique url links for the 25 most recent posts for the provided user
     """
     url = "https://www.instagram.com/" + username + "/"
-    browser = Chrome().get(url)
+    browser = Chrome()
+    browser.get(url)
     post = 'https://www.instagram.com/p/'
     post_links = []
     while len(post_links) < post_count:
@@ -42,7 +43,8 @@ def insta_link_details(url):
     A list of dictionaries with details for each Instagram post, including link,
     like/view count, age (when posted), and initial comment
     """
-    browser = Chrome().get(url)
+    browser = Chrome()
+    browser.get(url)
     try:
         # This captures the standard like count.
         likes = browser.find_element_by_partial_link_text(' likes').text
