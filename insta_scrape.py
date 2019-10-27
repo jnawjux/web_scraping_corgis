@@ -3,22 +3,22 @@ import re
 from selenium.webdriver import Chrome
 
 
-def recent_25_posts(username):
+def recent_25_posts(username, post_count=25):
     """
     With the input of an account page, scrape the 25 most recent posts urls
 
     Args:
     username: Instagram username
+    post_count: default of 25, set as many or as few as you want
 
     Returns:
     A list with the unique url links for the 25 most recent posts for the provided user
     """
     url = "https://www.instagram.com/" + username + "/"
-    browser = Chrome()
-    browser.get(url)
+    browser = Chrome().get(url)
     post = 'https://www.instagram.com/p/'
     post_links = []
-    while len(post_links) < 25:
+    while len(post_links) < post_count:
         links = [a.get_attribute('href')
                  for a in browser.find_elements_by_tag_name('a')]
         for link in links:
@@ -28,7 +28,7 @@ def recent_25_posts(username):
         browser.execute_script(scroll_down)
         time.sleep(10)
     else:
-        return post_links[:25]
+        return post_links[:post_count]
 
 
 def insta_details(urls):
