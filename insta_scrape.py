@@ -33,45 +33,6 @@ def recent_post_links(username, post_count=25):
         return post_links[:post_count]
 
 
-def insta_link_details(url):
-    """
-    Take a post url and return post details
-
-    Args:
-    urls: a list of urls for Instagram posts 
-
-    Returns:
-    A list of dictionaries with details for each Instagram post, including link,
-    post type, like/view count, age (when posted), and initial comment
-    """
-    browser = Chrome()
-    browser.get(url)
-    try:
-        # This captures the standard like count.
-        likes = browser.find_element_by_xpath(
-            """//*[@id="react-root"]/section/main/div/div/
-                article/div[2]/section[2]/div/div/button""").text.split()[0]
-        post_type = 'photo'
-    except:
-        # This captures the like count for videos which is stored
-        likes = browser.find_element_by_xpath(
-            """//*[@id="react-root"]/section/main/div/div/
-                article/div[2]/section[2]/div/span""").text.split()[0]
-        post_type = 'video'
-    age = browser.find_element_by_css_selector('a time').text
-    comment = browser.find_element_by_xpath(
-        "//span[contains(@title, 'Edited')]").text
-    post_details = {'link': url, 'type': post_type, 'likes/views': likes,
-                    'age': age, 'comment': comment}
-    time.sleep(10)
-    return post_details
-
-
-/html/body/span/section/main/div/div/article/div[2]/section[2]/div/div[2]/button
-/html/body/span/section/main/div/div/article/div[2]/section[2]/div/span
-//*[@id = "react-root"]/section/main/div/div/article/div[2]/section[2]/div/div/button
-
-
 def find_hashtags(comment):
     """
     Find hastags used in comment and return them
@@ -108,3 +69,41 @@ def find_mentions(comment):
         return mentions[0]
     else:
         return ""
+
+
+def insta_link_details(url):
+    """
+    Take a post url and return post details
+
+    Args:
+    urls: a list of urls for Instagram posts 
+
+    Returns:
+    A list of dictionaries with details for each Instagram post, including link,
+    post type, like/view count, age (when posted), and initial comment
+    """
+    browser = Chrome()
+    browser.get(url)
+    try:
+        # This captures the standard like count.
+        likes = browser.find_element_by_xpath(
+            """//*[@id="react-root"]/section/main/div/div/
+                article/div[2]/section[2]/div/div/button""").text.split()[0]
+        post_type = 'photo'
+    except:
+        # This captures the like count for videos which is stored
+        likes = browser.find_element_by_xpath(
+            """//*[@id="react-root"]/section/main/div/div/
+                article/div[2]/section[2]/div/span""").text.split()[0]
+        post_type = 'video'
+    age = browser.find_element_by_css_selector('a time').text
+    comment = browser.find_element_by_xpath(
+        """//*[@id="react-root"]/section/main/div/div/
+            article/div[2]/div[1]/ul/div/li/div/div/div[2]/span""").text
+    hashtags = find_hashtags(comment)
+    mentions = find_mentions(comment)
+    post_details = {'link': url, 'type': post_type, 'likes/views': likes,
+                    'age': age, 'comment': comment, 'hashtags': hashtags,
+                    'mentions': mentions}
+    time.sleep(10)
+    return post_details
