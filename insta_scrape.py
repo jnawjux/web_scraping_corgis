@@ -1,7 +1,8 @@
 import time
 import re
 import urllib
-from selenium.webdriver import Chrome
+from selenium.webdriver.firefox.options import Options
+from selenium.webdriver import Chrome, Firefox
 
 
 def recent_post_links(username, post_count=10):
@@ -121,12 +122,14 @@ def insta_url_to_img(url, filename="insta.jpg"):
     Returns:
     image file, saved locally
     """
-    browser = Chrome()
+    firefox_options = Options()
+    firefox_options.add_argument("--headless")
+    browser = Firefox(firefox_options=firefox_options)
     browser.get(url)
     # The srcset attribute contains 3 different links of different sizes, the first being 640w
     image_1 = browser.find_element_by_xpath(
-        """//*[@id="react-root"]/section/main/div/div/
-            article/div[1]/div/div/div[2]/div/div/div/ul/li[1]/
-            div/div/div/div[1]/div[1]/img""").get_attribute('srcset').split(' ')[0]
+        """/html/body/span/section/main/div/div/article/
+            div[1]/div/div/div[1]/div[1]/img""").get_attribute('src').split(' ')[0]
     # Exporting the photo
     urllib.request.urlretrieve(image_1, filename)
+    
