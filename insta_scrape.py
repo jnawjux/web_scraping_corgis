@@ -2,7 +2,7 @@ import time
 import re
 import urllib
 from selenium.webdriver.firefox.options import Options
-from selenium.webdriver import Chrome, Firefox
+from selenium.webdriver import Firefox
 
 
 def recent_post_links(username, post_count=10):
@@ -17,7 +17,9 @@ def recent_post_links(username, post_count=10):
     A list with the unique url links for the most recent posts for the provided user
     """
     url = "https://www.instagram.com/" + username + "/"
-    browser = Chrome()
+    firefox_options = Options()
+    firefox_options.add_argument("--headless")
+    browser = Firefox(firefox_options=firefox_options)
     browser.get(url)
     post = 'https://www.instagram.com/p/'
     post_links = []
@@ -84,7 +86,9 @@ def insta_link_details(url):
     A list of dictionaries with details for each Instagram post, including link,
     post type, like/view count, age (when posted), and initial comment
     """
-    browser = Chrome()
+    firefox_options = Options()
+    firefox_options.add_argument("--headless")
+    browser = Firefox(firefox_options=firefox_options)
     browser.get(url)
     try:
         # This captures the standard like count.
@@ -126,10 +130,11 @@ def insta_url_to_img(url, filename="insta.jpg"):
     firefox_options.add_argument("--headless")
     browser = Firefox(firefox_options=firefox_options)
     browser.get(url)
-    # The srcset attribute contains 3 different links of different sizes, the first being 640w
-    image_1 = browser.find_element_by_xpath(
-        """/html/body/span/section/main/div/div/article/
-            div[1]/div/div/div[1]/div[1]/img""").get_attribute('src').split(' ')[0]
-    # Exporting the photo
-    urllib.request.urlretrieve(image_1, filename)
-    
+    try: 
+        image = browser.find_element_by_xpath(
+            """/html/body/span/section/main/div/div/article/
+                div[1]/div/div/div[1]/div[1]/img""").get_attribute('src').split(' ')[0]
+        urllib.request.urlretrieve(image, filename)
+    # If image is not a photo, print notice
+    except:
+        print("No image")
