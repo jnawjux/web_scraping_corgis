@@ -4,16 +4,16 @@ import urllib
 from selenium.webdriver import Chrome
 
 
-def recent_post_links(username, post_count=25):
+def recent_post_links(username, post_count=10):
     """
-    With the input of an account page, scrape the 25 most recent posts urls
+    With the input of an account page, scrape the 10 most recent posts urls
 
     Args:
     username: Instagram username
-    post_count: default of 25, set as many or as few as you want
+    post_count: default of 10, set as many or as few as you want
 
     Returns:
-    A list with the unique url links for the 25 most recent posts for the provided user
+    A list with the unique url links for the most recent posts for the provided user
     """
     url = "https://www.instagram.com/" + username + "/"
     browser = Chrome()
@@ -42,7 +42,7 @@ def find_hashtags(comment):
     comment: Instagram comment text
 
     Returns:
-    a list or individual hashtag if found in comment
+    a list or individual hashtags if found in comment
     """
     hashtags = re.findall('#[A-Za-z]+', comment)
     if (len(hashtags) > 1) & (len(hashtags) != 1):
