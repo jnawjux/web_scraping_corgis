@@ -17,3 +17,9 @@ A fun scraping project to see the recent posts from a bunch of prominent Corgis 
 ### Bonus: How to extract the photo:
 
 - insta_url_to_img: gets photo from post url. Note: does not currently work with posts that have multiple images, only grabs the first, and does not work with videos.
+
+### Quick Strart
+Installation: Clone this repo and cd into it. Make sure geckodriver the Firefox Selenium Driver is executable in project path.
+Create a new file based on the Demo file, I've called mine make.py. This is what you'll use to create your .CSV. 
+Run insta_scraper command like this `python3 insta_scrape.py 'recent_post_links(example_username,10)'.`. 
+Then run make.py to compile your CSV. 
