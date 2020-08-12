@@ -93,19 +93,21 @@ def insta_link_details(url):
     try:
         # This captures the standard like count.
         likes = browser.find_element_by_xpath(
-            """//*[@id="react-root"]/section/main/div/div/
-                article/div[2]/section[2]/div/div/button""").text.split()[0]
+            """/html/body/div[1]/section/main/div/div/article/
+                div[3]/section[2]/div/div/button/span""").text.split()[0]
         post_type = 'photo'
     except:
         # This captures the like count for videos which is stored
         likes = browser.find_element_by_xpath(
-            """//*[@id="react-root"]/section/main/div/div/
-                article/div[2]/section[2]/div/span""").text.split()[0]
+            """/html/body/div[1]/section/main/div/div/article/
+                div[3]/section[2]/div/span/span""").text.split()[0]
         post_type = 'video'
     age = browser.find_element_by_css_selector('a time').text
     comment = browser.find_element_by_xpath(
-        """//*[@id="react-root"]/section/main/div/div/
-            article/div[2]/div[1]/ul/div/li/div/div/div[2]/span""").text
+        """/html/body/div[1]/section/main/div/div[1]/article/
+        div[3]/div[1]/ul/div/li/div/div/div[2]/span""").text
+    
+    
     hashtags = find_hashtags(comment)
     mentions = find_mentions(comment)
     post_details = {'link': url, 'type': post_type, 'likes/views': likes,
